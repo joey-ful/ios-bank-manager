@@ -295,14 +295,14 @@ git checkout Step2
 
 ```swift
 struct Camper {
-		var name: String
+    var name: String
 		
-		mutating func changeName(to newName: String) {
-				name = "뭘로 바꾸죠?" //가능한 문장
-				DispatchQueue.global().async {
-						self.name = "조이!" //불가능. 클로저가 mutable한 self를 캡쳐해서 가지고 나가려 하기 때문
-				}
-		}
+    mutating func changeName(to newName: String) {
+        name = "뭘로 바꾸죠?" //가능한 문장
+        DispatchQueue.global().async {
+            self.name = "조이!" //불가능. 클로저가 mutable한 self를 캡쳐해서 가지고 나가려 하기 때문
+        }
+    }
 }
 ```
 
@@ -346,7 +346,7 @@ DispatchQueue는 개발자가 queue에 closure 형태의 작업을 추가할 수
 
 **Global**
 
-- 비동기로 작업이 처리되는 queue. 서비스 품질(quality of service)에 따라 6가지로 분류가 되어 있으며 각 queue는 우선순위가 높을 수록 더 많은 Thread를 배치하고 배터리를 더 집중해서 작업을 더 빨리 처리할 수 있도록 한다.
+- 비동기로 작업이 처리되는 queue. 서비스 품질(quality of service)에 따라 6가지로 분류가 되어 있으며 각 queue는 우선순위가 높을 수록 ~~더 많은 Thread를 배치하고~~ 배터리를 더 집중해서 작업을 더 빨리 처리할 수 있도록 한다. (qos별로 큐가 쓸 수 있는 쓰레드의 개수제한은 존재하지 않는다. 다만 쓰레드풀로부터 가져온 소프트웨어 쓰레드가 얼마나 물리적인 쓰레드(또는 CPU)에 더 빈번히 배치되는지는 달라진다)
 - .userInteractive, .userInitiated, .default, .utility, .background, .unspecified 가 있으며 default는 `DispatchQueue.global()` 이라고만 명시해줘도 된다. 대부분의 경우 default를 사용한다.
 - qos에 따라 큐 인스턴스는 별도로 생성된다.
 
@@ -374,10 +374,10 @@ DispatchQueue는 개발자가 queue에 closure 형태의 작업을 추가할 수
 
 ### Semaphore
 
-- 각 은행원은 고객의 업무를 동기적으로 처리한다. 하지만 만약 같은 업무를 수행하는 은행원이 둘이 있다면? 동기적인 작업의 개수를 제한하는 방식을 구현하기 위해 semaphore 를 사용했다.
+- 각 은행원은 고객의 업무를 동기적으로 처리한다. 하지만 만약 같은 업무를 수행하는 은행원이 둘이 있다면? 비동기적인 작업의 개수를 제한하는 방식을 구현하기 위해 semaphore 를 사용했다.
 - Semaphore는 임계구역 문제의 해결방안 중 하나로 **동일한 자원에 동시에 접근할 수 있는 개수**를 의미하는 정수 변수다. Semaphore는 `wait()` (p연산)과 `signal()` (v연산) 으로만 접근할 수 있으며 semaphore가 0이면 접근을 시도하는 프로세스나 스레드는 대기를 해야 한다.
 - semaphore가 0이면 프로세스나 스레드는 `wait()` 에서 대기를 하다가 접근이 허용되면 semaphore를 1 감소시키고 접근한다. 데이터 사용이 끝나면 `signal()` 로 semaphore를 1 증가시켜 사용이 끝났음을 알린다.
-- 같은 업무를 하는 은행원의 수가 2라면 `DispatchSemaphore(Value: 2)` 를 만들어 비동기 작업을 처리하도록 했다. 그러면 DispatchQueue가 알아서 동시에 2개의 작업만 처리한다.
+- 같은 업무를 하는 은행원의 수가 2라면 `DispatchSemaphore(value: 2)` 를 만들었다. 이렇게 함으로써 DispatchQueue에 동시에 보낼 수 있는 Task의 최대 개수를 제한했다.
 
 &nbsp;   
 
@@ -401,7 +401,9 @@ func serveCustomers() {
 ```
 
 - DispatchQueue로 비동기 작업을 보낼 때 `semaphore.signal()`과 `tellerGroup.leave()` 는 과연 멀티 스레드 환경에서 동시에 호출됐을 때 thread safe한지 의문이 들었다. [Thread와 Semaphore에 관한 스탠포드 대학 문서](https://see.stanford.edu/materials/icsppcs107/23-Concurrency-Examples.pdf)를 참고해보니 semaphore의 연산들은 `atomic` 하다고 한다. 문서에 따르면 어떤 작업이 `atomic` 하다는 것은 같은 작업을 시도하는 다른 스레드에 의해 방해받을 일이 없다. 즉, semaphore의 연산들은 `thread safe`하다.
-- [DispatchSemaphore의 공식문서](https://developer.apple.com/documentation/dispatch/dispatchsemaphore)를 보면 *"efficient implementation of a traditional counting semaphore"* 라고 설명하고 있으니 DispatchSemaphore 역시 연산들이 atomic하기 때문에 `thread safe`한 작업이라고 봐도 좋을 것 같다.
+- [DispatchSemaphore의 공식문서](https://developer.apple.com/documentation/dispatch/dispatchsemaphore)를 보면 *"efficient implementation of a traditional counting semaphore"* 라고 설명하고 있으니 DispatchSemaphore 역시 연산들이 atomic할 것이라고 예상했다. (`thread safe`한 작업이라고 봐도 좋을 것 같다.)
+- DispatchGroup에 대해서는 찾지 못했지만 `thread safe` 할 것이라고 생각했다.    
+- DispatchQueue는 자체적으로 `thread safe`하다고 한다.   
 
 &nbsp;   
 
@@ -428,7 +430,7 @@ func serveCustomers() {
 
 - 상호 배제라고 하며 공유자원에 여러 쓰레드가 접근하려 하는 것을 피하기 위해 사용된다.
 
-  [상호 배제 - 위키백과]([https://ko.wikipedia.org/wiki/상호_배제)
+  [상호 배제 - 위키백과](https://ko.wikipedia.org/wiki/상호_배제)
 
 - 상호 배제 기법에는 여러가지가 있다.
 
@@ -468,9 +470,9 @@ struct Bank {
 
 ```swift
 func someVariadic(numbers: Int...) {
-		numbers.forEach {
-				//...
-		}
+    numbers.forEach {
+        //...
+    }
 }
 
 someVariadic()
@@ -511,7 +513,7 @@ someVariadic(1, 2, 3)
 
 ```swift
 enum SomeEnum {
-		static let someGlobalConst = 100
+    static let someGlobalConst = 100
 }
 ```
 
