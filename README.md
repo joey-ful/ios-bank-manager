@@ -2,23 +2,24 @@
 
 **프로젝트 기간: 2021년 7월 26일 ~ 8월 6일**
 
-*with Coden, Joey*.  
-&nbsp;   
+*by Coden, Joey*  
 
-## UML - 수정 전
+## UML
+### Version 1.0 - Step1
 
 ![UML Ver.1](https://user-images.githubusercontent.com/39452092/127615589-93a85404-fe9e-4dec-9248-5d766cc640b1.png)
 &nbsp;   
 
-## UML - 수정 후
+### Version 2.0 - Step3
 
 ![UML Ver.2](https://user-images.githubusercontent.com/39452092/128499668-630c88c0-7cf2-422e-9d02-eb794f76ed3f.png)
 
 &nbsp;   
 
-# STEP1 - LinkedList로 Queue 타입 구현
-
-## 📖 주요 학습 개념
+# Step1 - LinkedList로 Queue 타입 구현 
+```sh=
+git checkout Step1
+```
 
 ### **LinkedList 자료구조의 이해 및 구현**
 
@@ -187,9 +188,10 @@ struct LinkedList<T> {
 
 &nbsp;   
 
-# STEP2 - Queue 활용과 동시성 기초
-
-## 📖 주요 학습 개념
+# Step2 - Queue 활용과 동시성 기초
+```sh=
+git checkout Step2
+```
 
 ### Serial VS. Concurrent
 
@@ -306,9 +308,10 @@ struct Camper {
 
 &nbsp;   
 
-# STEP3 - DispatchQueue를 통한 동시성 처리
-
-## 📖 주요 학습 개념
+# Step3 - DispatchQueue를 통한 동시성 처리
+```sh=
+git checkout Step3
+```
 
 ### DispatchQueue
 
