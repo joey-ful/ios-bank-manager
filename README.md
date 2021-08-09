@@ -16,9 +16,9 @@
 
 &nbsp;   
 
-# Step1 - LinkedList로 Queue 타입 구현 
+# STEP1 - LinkedList로 Queue 타입 구현 
 ```sh=
-git checkout Step1
+git checkout step1
 ```
 
 ### **LinkedList 자료구조의 이해 및 구현**
@@ -188,9 +188,9 @@ struct LinkedList<T> {
 
 &nbsp;   
 
-# Step2 - Queue 활용과 동시성 기초
+# STEP - Queue 활용과 동시성 기초
 ```sh=
-git checkout Step2
+git checkout step2
 ```
 
 ### Serial VS. Concurrent
@@ -308,9 +308,9 @@ struct Camper {
 
 &nbsp;   
 
-# Step3 - DispatchQueue를 통한 동시성 처리
+# STEP - DispatchQueue를 통한 동시성 처리
 ```sh=
-git checkout Step3
+git checkout step3
 ```
 
 ### DispatchQueue
