@@ -4,6 +4,8 @@
 
 #### 프로젝트 팀원 : [Joey](https://github.com/joey-ful), [Coden](https://github.com/ictechgy)
 
+![bankManager](https://user-images.githubusercontent.com/52592748/130001362-445f57f6-520e-48f5-8018-5367d38effd3.gif)
+
 ## UML
 ### Version 1.0 - Step1
 
